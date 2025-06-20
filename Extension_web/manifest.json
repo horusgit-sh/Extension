@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "Word Translator & Explainer",
+    "version": "1.0",
+    "description": "Translate highlited word, briefily explain mean and save word -> translation to server",
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"],
+        "css": ["content.css"]
+      }
+    ]
+  }
+  

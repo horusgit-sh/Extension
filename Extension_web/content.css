@@ -1,0 +1,8 @@
+#word-translator-popup {
+    font-family: Arial, sans-serif;
+    transition: box-shadow 0.2s;
+  }
+  #word-translator-popup button:hover {
+    box-shadow: 0 2px 8px rgba(46, 128, 236, 0.15);
+  }
+  
