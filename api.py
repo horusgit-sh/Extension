@@ -2,7 +2,6 @@ from fastapi import FastAPI, Query, HTTPException
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, declarative_base
-import requests
 import deepl
 DATABASE_URL = "postgresql+psycopg2://postgres:eJJs-j9vS5ip-TPb-Hv@localhost:5432/postgres"
 

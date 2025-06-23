@@ -1,9 +1,0 @@
-#my-minibtn {
-  transition: box-shadow 0.2s;
-}
-#my-minibtn:hover {
-  box-shadow: 0 4px 18px rgba(46,128,236,0.14);
-}
-#my-big-popup {
-  font-family: Arial,sans-serif;
-}
