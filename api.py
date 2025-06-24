@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, declarative_base
 import deepl
+import requests
 DATABASE_URL = "postgresql+psycopg2://postgres:eJJs-j9vS5ip-TPb-Hv@localhost:5432/postgres"
 
 engine = create_engine(DATABASE_URL)
@@ -34,8 +35,8 @@ def save_word(word_in: WordIn):
         raise HTTPException(status_code=400, detail="Word already exist in db!")
     db_word = Word(
         word=word_in.word,
-        translation=word_in.translation,
-        explanation=word_in.explanation
+        translation=translate(word_in.word),
+        explanation=get_meaning(word_in.word)
     )
     db.add(db_word)
     db.commit()
@@ -43,9 +44,30 @@ def save_word(word_in: WordIn):
     db.close()
     return {"status": "ok"}
 
+@app.get("/dictionary")
+def get_meaning(word: str = Query(..., description="Word for search")):
+    url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
+    response = requests.get(url)
 
-@app.get("/exist_word")
-def get_exist_word(word: str = Query(..., description="Word for search")):
+    if response.status_code != 200:
+        raise HTTPException(status_code=404, detail="Can't find this word!")
+
+    data = response.json()
+
+    definitions = []
+    for meaning in data[0].get("meanings", []):
+        for d in meaning.get("definitions", []):
+            definitions.append({
+                "definition": d.get("definition")
+            })
+
+    return {
+        "definitions": definitions
+    }
+
+
+@app.get("/get_word")
+def get_word(word: str = Query(..., description="Word for search")):
     db = SessionLocal()
     existing_word = db.query(Word).filter(Word.word == word).first()
     db.close()
@@ -56,7 +78,7 @@ def get_exist_word(word: str = Query(..., description="Word for search")):
             "explanation": existing_word.explanation
         }
     else:
-        return {"exists": False}
+        raise HTTPException(status_code=404, detail="Can't find this word!")
 
 
 @app.get("/translate")
