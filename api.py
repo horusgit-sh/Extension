@@ -62,7 +62,7 @@ def get_meaning(word: str = Query(..., description="Word for search")):
             })
 
     return {
-        "definitions": definitions
+        definitions[0]
     }
 
 
