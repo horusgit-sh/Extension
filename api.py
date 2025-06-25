@@ -54,16 +54,12 @@ def get_meaning(word: str = Query(..., description="Word for search")):
 
     data = response.json()
 
-    definitions = []
-    for meaning in data[0].get("meanings", []):
-        for d in meaning.get("definitions", []):
-            definitions.append({
-                "definition": d.get("definition")
-            })
+    try:
+        first_definition = data[0]["meanings"][0]["definitions"][0]["definition"]
+    except (KeyError, IndexError):
+        raise HTTPException(status_code=500, detail="Definition not found")
 
-    return {
-        "definitions": definitions
-    }
+    return {"definition": first_definition}
 
 
 @app.get("/get_word")
